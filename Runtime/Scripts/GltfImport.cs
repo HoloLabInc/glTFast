@@ -104,6 +104,7 @@ namespace GLTFast {
             Extensions.MeshQuantization,
             Extensions.MaterialsTransmission,
             Extensions.MeshGPUInstancing,
+            Extensions.CesiumRtc
         };
 
         static IDeferAgent defaultDeferAgent;

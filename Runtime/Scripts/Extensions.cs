@@ -66,6 +66,10 @@ namespace GLTFast {
         /// <see href="https://github.com/KhronosGroup/glTF/blob/main/extensions/2.0/Khronos/KHR_texture_transform/README.md">KHR_texture_transform</see> glTF extension
         /// </summary>
         public const string TextureTransform = "KHR_texture_transform";
+        /// <summary>
+        /// <see href="https://github.com/KhronosGroup/glTF/blob/main/extensions/1.0/Vendor/CESIUM_RTC/README.md">CESIUM_RTC</see> glTF extension
+        /// </summary>
+        public const string CesiumRtc = "CESIUM_RTC";
 
         /// <summary>
         /// Returns the official name of the glTF extension
