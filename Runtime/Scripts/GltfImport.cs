@@ -503,6 +503,11 @@ namespace GLTFast {
         /// </summary>
         public int sceneCount => gltfRoot?.scenes?.Length ?? 0;
 
+        public RootExtensions GetRootExtensions()
+        {
+            return gltfRoot?.extensions;
+        }
+
         /// <summary>
         /// Get a glTF's scene's name by its index
         /// </summary>
