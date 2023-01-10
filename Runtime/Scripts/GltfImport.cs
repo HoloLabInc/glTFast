@@ -125,6 +125,7 @@ namespace GLTFast
             ExtensionName.MaterialsTransmission,
             ExtensionName.MeshGPUInstancing,
             ExtensionName.LightsPunctual,
+            ExtensionName.CesiumRtc,
         };
 
         static IDeferAgent s_DefaultDeferAgent;
@@ -784,6 +785,11 @@ namespace GLTFast
                 return m_GltfRoot.extensions.KHR_lights_punctual.lights[index];
             }
             return null;
+        }
+
+        public CesiumRtc GetCesiumRtc()
+        {
+            return m_GltfRoot?.extensions.CESIUM_RTC;
         }
 
         /// <inheritdoc />
