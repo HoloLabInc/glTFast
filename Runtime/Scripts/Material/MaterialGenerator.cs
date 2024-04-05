@@ -197,7 +197,11 @@ namespace GLTFast.Materials
 #if USING_URP
                 case RenderPipeline.Universal:
                     var urpAsset = (UniversalRenderPipelineAsset) (QualitySettings.renderPipeline ? QualitySettings.renderPipeline : GraphicsSettings.defaultRenderPipeline);
+#if UNITY_VISIONOS
+                    s_DefaultMaterialGenerator = new PolySpatialUniversalRPMaterialGenerator(urpAsset);
+#else
                     s_DefaultMaterialGenerator = new UniversalRPMaterialGenerator(urpAsset);
+#endif
                     return s_DefaultMaterialGenerator;
 #endif
                 case RenderPipeline.HighDefinition:
