@@ -234,7 +234,7 @@ namespace GLTFast.Materials {
             } else {
                 materialType = MaterialType.MetallicRoughness;
                 var metallicShaderFeatures = GetMetallicShaderFeatures(gltfMaterial);
-                material = GetMetallicMaterial(metallicShaderFeatures);
+                material = GetMetallicMaterial(metallicShaderFeatures, gltfMaterial);
                 shaderMode = (ShaderMode)(metallicShaderFeatures & MetallicShaderFeatures.ModeMask);
             }
 
@@ -456,8 +456,8 @@ namespace GLTFast.Materials {
             return material;
         }
 
-        Material GetMetallicMaterial( MetallicShaderFeatures metallicShaderFeatures ) {
-            Shader shader = GetMetallicShader(metallicShaderFeatures);
+        Material GetMetallicMaterial( MetallicShaderFeatures metallicShaderFeatures, MaterialBase gltfMaterial = null ) {
+            Shader shader = GetMetallicShader(metallicShaderFeatures, gltfMaterial);
             if(shader==null) {
                 return null;
             }
@@ -494,7 +494,7 @@ namespace GLTFast.Materials {
         }
 
         // ReSharper disable once UnusedParameter.Local
-        protected virtual Shader GetMetallicShader(MetallicShaderFeatures features)
+        protected virtual Shader GetMetallicShader(MetallicShaderFeatures features, MaterialBase gltfMaterial = null)
         {
 #if UNITY_SHADER_GRAPH_12_OR_NEWER
             if (s_MetallicShader == null) {

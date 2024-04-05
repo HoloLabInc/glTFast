@@ -70,7 +70,7 @@ namespace GLTFast.Materials {
         /// </summary>
         /// <param name="features">Material features</param>
         /// <returns>Shader capable of rendering the features</returns>
-        protected override Shader GetMetallicShader(MetallicShaderFeatures features)
+        protected override Shader GetMetallicShader(MetallicShaderFeatures features, MaterialBase gltfMaterial = null)
         {
             if ((features & MetallicShaderFeatures.ClearCoat) != 0)
             {
@@ -80,14 +80,14 @@ namespace GLTFast.Materials {
                     if (s_MetallicClearcoatShader == null)
                     {
                         // Fallback to regular shader graph
-                        s_MetallicClearcoatShader = base.GetMetallicShader(features);
+                        s_MetallicClearcoatShader = base.GetMetallicShader(features, gltfMaterial);
                     }
                     s_MetallicClearcoatShaderQueried = true;
                 }
                 return s_MetallicClearcoatShader;
             }
 
-            return base.GetMetallicShader(features);
+            return base.GetMetallicShader(features, gltfMaterial);
         }
 #endif
 
