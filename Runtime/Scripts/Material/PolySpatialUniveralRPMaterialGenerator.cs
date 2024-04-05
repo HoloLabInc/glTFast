@@ -22,10 +22,22 @@ namespace GLTFast.Materials
         static Shader s_MetallicTransparentShader;
         static Shader s_MetallicClearcoatTransparentShader;
 
+        static Shader s_UnlitCutoutShader;
+        static Shader s_UnlitTransparentShader;
+
+        static Shader s_SpecularCutoutShader;
+        static Shader s_SpecularTransparentShader;
+
         public const string MetallicCutoutShader = "PolySpatial/glTF-pbrMetallicRoughness-cutout";
         public const string MetallicClearcoatCutoutShader = "PolySpatial/URP/glTF-pbrMetallicRoughness-Clearcoat-cutout";
         public const string MetallicTransparentShader = "PolySpatial/glTF-pbrMetallicRoughness-transparent";
         public const string MetallicClearcoatTransparentShader = "PolySpatial/URP/glTF-pbrMetallicRoughness-Clearcoat-transparent";
+
+        public const string UnlitCutoutShader = "PolySpatial/glTF-Unlit-cutout";
+        public const string UnlitTransparentShader = "PolySpatial/glTF-Unlit-transparent";
+
+        public const string SpecularCutoutShader = "PolySpatial/glTF-pbrSpecularGlossiness-cutout";
+        public const string SpecularTransparentShader = "PolySpatial/glTF-pbrSpecularGlossiness-transparent";
 
         private enum ShaderType
         {
@@ -34,7 +46,15 @@ namespace GLTFast.Materials
             MetallicCutout,
             MetallicClearCoatCutout,
             MetallicTransparent,
-            MetallicClearCoatTransparent
+            MetallicClearCoatTransparent,
+
+            Unlit,
+            UnlitCutout,
+            UnlitTransparent,
+
+            Specular,
+            SpecularCutout,
+            SpecularTransparent,
         }
 
         public PolySpatialUniversalRPMaterialGenerator(UniversalRenderPipelineAsset renderPipelineAsset) : base(renderPipelineAsset) { }
@@ -67,6 +87,54 @@ namespace GLTFast.Materials
             }
         }
 
+        protected override Shader GetUnlitShader(MaterialBase gltfMaterial)
+        {
+            var alphaMode = gltfMaterial.GetAlphaMode();
+            var shaderType = alphaMode switch
+            {
+                MaterialBase.AlphaMode.Mask => ShaderType.UnlitCutout,
+                MaterialBase.AlphaMode.Blend => ShaderType.UnlitTransparent,
+                _ => ShaderType.Unlit,
+            };
+
+            var shader = GetShader(shaderType);
+            if (shader != null)
+            {
+                return shader;
+            }
+            else
+            {
+                return base.GetUnlitShader(gltfMaterial);
+            }
+        }
+
+        protected override Shader GetSpecularShader(SpecularShaderFeatures features, MaterialBase gltfMaterial = null)
+        {
+            var alphaMode = MaterialBase.AlphaMode.Opaque;
+            if (gltfMaterial != null)
+            {
+                alphaMode = gltfMaterial.GetAlphaMode();
+            }
+
+            var shaderType = alphaMode switch
+            {
+                MaterialBase.AlphaMode.Mask => ShaderType.SpecularCutout,
+                MaterialBase.AlphaMode.Blend => ShaderType.SpecularTransparent,
+                _ => ShaderType.Specular,
+            };
+
+            var shader = GetShader(shaderType);
+
+            if (shader != null)
+            {
+                return shader;
+            }
+            else
+            {
+                return base.GetSpecularShader(features, gltfMaterial);
+            }
+        }
+
         private Shader GetShader(ShaderType shaderType)
         {
             switch (shaderType)
@@ -96,6 +164,32 @@ namespace GLTFast.Materials
                         s_MetallicClearcoatTransparentShader = LoadShaderByName(MetallicClearcoatTransparentShader);
                     }
                     break;
+
+                case ShaderType.UnlitCutout:
+                    if (s_UnlitCutoutShader == null)
+                    {
+                        s_UnlitCutoutShader = LoadShaderByName(UnlitCutoutShader);
+                    }
+                    return s_UnlitCutoutShader;
+                case ShaderType.UnlitTransparent:
+                    if (s_UnlitTransparentShader == null)
+                    {
+                        s_UnlitTransparentShader = LoadShaderByName(UnlitTransparentShader);
+                    }
+                    return s_UnlitTransparentShader;
+
+                case ShaderType.SpecularCutout:
+                    if (s_SpecularCutoutShader == null)
+                    {
+                        s_SpecularCutoutShader = LoadShaderByName(SpecularCutoutShader);
+                    }
+                    return s_SpecularCutoutShader;
+                case ShaderType.SpecularTransparent:
+                    if (s_SpecularTransparentShader == null)
+                    {
+                        s_SpecularTransparentShader = LoadShaderByName(SpecularTransparentShader);
+                    }
+                    return s_SpecularTransparentShader;
             }
 
             return null;

@@ -227,7 +227,7 @@ namespace GLTFast.Materials {
             } else if (isSpecularGlossiness) {
                 materialType = MaterialType.SpecularGlossiness;
                 var specularShaderFeatures = GetSpecularShaderFeatures(gltfMaterial);
-                material = GetSpecularMaterial(specularShaderFeatures);
+                material = GetSpecularMaterial(specularShaderFeatures, gltfMaterial);
                 if ((specularShaderFeatures & SpecularShaderFeatures.AlphaBlend) != 0) {
                     shaderMode = ShaderMode.Blend;
                 }
@@ -481,8 +481,8 @@ namespace GLTFast.Materials {
             return mat;
         }
 
-        Material GetSpecularMaterial(SpecularShaderFeatures features) {
-            var shader = GetSpecularShader(features);
+        Material GetSpecularMaterial(SpecularShaderFeatures features, MaterialBase gltfMaterial = null) {
+            var shader = GetSpecularShader(features, gltfMaterial);
             if(shader==null) {
                 return null;
             }
@@ -511,7 +511,7 @@ namespace GLTFast.Materials {
         }
 
         // ReSharper disable once UnusedParameter.Local
-        Shader GetUnlitShader(MaterialBase gltfMaterial) {
+        protected virtual Shader GetUnlitShader(MaterialBase gltfMaterial) {
 #if UNITY_SHADER_GRAPH_12_OR_NEWER
             if (s_UnlitShader == null) {
                 s_UnlitShader = LoadShaderByName(UnlitShader);
@@ -529,7 +529,7 @@ namespace GLTFast.Materials {
 
 
         // ReSharper disable once UnusedParameter.Local
-        Shader GetSpecularShader(SpecularShaderFeatures features) {
+        protected virtual Shader GetSpecularShader(SpecularShaderFeatures features, MaterialBase gltfMaterial = null) {
 #if UNITY_SHADER_GRAPH_12_OR_NEWER
             if (s_SpecularShader == null) {
                 s_SpecularShader = LoadShaderByName(SpecularShader);
