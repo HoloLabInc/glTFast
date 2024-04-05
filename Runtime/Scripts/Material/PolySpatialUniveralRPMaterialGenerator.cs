@@ -22,15 +22,15 @@ namespace GLTFast.Materials
 
         static Shader s_MetallicTransparentShader;
 
-        public const string MetallicTransparentShader = "glTF-pbrMetallicRoughness-transparent";
+        public const string MetallicTransparentShader = "PolySpatial/glTF-pbrMetallicRoughness-transparent";
 
-        public const string MetallicClearcoatTransparentShader = "URP/glTF-pbrMetallicRoughness-Clearcoat-transparent";
+        public const string MetallicClearcoatTransparentShader = "PolySpatial/URP/glTF-pbrMetallicRoughness-Clearcoat-transparent";
 
         public PolySpatialUniversalRPMaterialGenerator(UniversalRenderPipelineAsset renderPipelineAsset) : base(renderPipelineAsset) { }
 
         protected override Shader GetMetallicShader(MetallicShaderFeatures features)
         {
-            if ((features & MetallicShaderFeatures.ModeTransparent) != 0)
+            if ((features & MetallicShaderFeatures.ModeTransparent) != 0 || (features & MetallicShaderFeatures.ModeFade) != 0)
             {
                 if ((features & MetallicShaderFeatures.ClearCoat) != 0)
                 {
