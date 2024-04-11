@@ -20,7 +20,7 @@ using Mesh = UnityEngine.Mesh;
 
 namespace GLTFast
 {
-
+    using System.Linq;
     using Logging;
 
     /// <summary>
@@ -288,6 +288,35 @@ namespace GLTFast
             }
 
             renderer.sharedMaterials = materials;
+
+            // Edited: Add workaround for double-sided materials
+            var doubleSided = materials.Length > 0 && materials.All(x => x.shader.name.EndsWith("-double"));
+            if (doubleSided)
+            {
+                if (joints == null && !hasMorphTargets)
+                {
+                    var currentMesh = meshGo.GetComponent<MeshFilter>().mesh;
+                    if (currentMesh.subMeshCount == 1)
+                    {
+                        var triangles = currentMesh.triangles;
+                        var originalLength = triangles.Length;
+                        var doubleSidedTriangles = new int[originalLength * 2];
+                        Array.Copy(triangles, doubleSidedTriangles, originalLength);
+                        for (var i = 0; i < triangles.Length; i += 3)
+                        {
+                            doubleSidedTriangles[originalLength + i] = triangles[i + 2];
+                            doubleSidedTriangles[originalLength + i + 1] = triangles[i + 1];
+                            doubleSidedTriangles[originalLength + i + 2] = triangles[i];
+                        }
+
+                        currentMesh.triangles = doubleSidedTriangles;
+                    }
+                }
+                else
+                {
+                    // TODO: Not implemented for SkinnedMeshRenderer
+                }
+            }
 
             MeshAdded?.Invoke(
                 meshGo,
